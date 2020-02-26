@@ -1,5 +1,6 @@
 //标准io
 #include <stdio.h>
+#include <stdlib.h>
 //线程
 #include <pthread.h>
 //read,write,close等文件操作在此定义
@@ -28,8 +29,11 @@ void *receive(void *sock)
     }
   }
 }
-int main()
+int main(int argc,char *argv[])
 {
+  if(argc != 3) {
+	  printf("use: %d [addr] [port]",argv[0]);
+  }
   //套接字
   int sock;
   //连接服务器时用
@@ -44,7 +48,7 @@ int main()
   addr_in.sin_family = AF_INET; /* 主机字节序 */
   
   //设置目标服务器端口
-  addr_in.sin_port = htons(8000); /*short, 网络字节序 */
+  addr_in.sin_port = htons(atoi(argv[2])); /*short, 网络字节序 */
   
   /*
   以下两个函数用于二进制地址格式和点分十进制字符串格式之间相互转换，但是这两个函数仅仅支持IPv4。
@@ -58,7 +62,7 @@ int main()
   //设置目标服务器
   struct hostent *hp;
   //支持域名和ip的方法
-  hp = gethostbyname("137.199.131.89");
+  hp = gethostbyname(argv[1]);
   /* memcpy()详解:
      函数原型: void *memcpy(void *dest, const void *src, size_t n);
      功能: 从源src所指的内存地址的起始位置开始拷贝n个字节到目标dest所指的内存地址的起始位置中
